@@ -182,9 +182,17 @@ chmod 600 .env
 
 Edite (`vim .env` ou `nano .env`):
 
-- `POSTGRES_PASSWORD`: gere com `openssl rand -base64 24`
+- `POSTGRES_PASSWORD`: gere com `openssl rand -hex 24` (use `-hex`, NÃO `-base64`: base64 gera `/`, `+`, `=` que quebram URL parsing no DATABASE_URL)
 - `DATABASE_URL`: ajuste com a senha nova. Formato: `postgres://<user>:<senha>@postgres:5432/<db>`
 - Outras env vars específicas da app (API keys, JWT secrets, URLs externas, etc)
+
+**Gotcha do postgres:** o container só lê `POSTGRES_PASSWORD` na primeira inicialização do volume. Se você já subiu o postgres antes com outra senha e editar agora, precisa resetar:
+
+```bash
+docker compose down
+rm -rf data/postgres
+# depois sobe de novo no Step 8
+```
 
 **CRÍTICO:** copie o conteúdo do `.env` pro 1Password antes de prosseguir. Se a VPS for perdida, é a única coisa não reproduzível pelo código.
 
