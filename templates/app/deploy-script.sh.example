@@ -16,11 +16,14 @@ echo "==> Deploy PROJETO @ tag=${IMAGE_TAG}"
 
 cd /srv/apps/PROJETO
 
+echo "==> Garantindo postgres up (idempotente, não recria se já estiver rodando)"
+IMAGE_TAG="${IMAGE_TAG}" docker compose up -d postgres
+
 echo "==> Pull da imagem nova"
 IMAGE_TAG="${IMAGE_TAG}" docker compose pull app
 
-echo "==> Migrations"
-IMAGE_TAG="${IMAGE_TAG}" docker compose run --rm app MIGRATE_CMD
+echo "==> Migrations (--no-deps pra não tocar no postgres já up)"
+IMAGE_TAG="${IMAGE_TAG}" docker compose run --rm --no-deps app MIGRATE_CMD
 
 echo "==> Recreate do container app (postgres mantém estado)"
 IMAGE_TAG="${IMAGE_TAG}" docker compose up -d --no-deps app
