@@ -120,20 +120,29 @@ Se a assinatura estiver errada, o webhook responde 400/403 com mensagem de "hook
 
 **Actions recebe 403 mas curl manual do laptop funciona:**
 
-Cloudflare está bloqueando o request do GitHub Actions com challenge de bot (Bot Fight Mode). Sintomas no `curl -v`:
+Cloudflare está bloqueando o request do GitHub Actions com challenge de bot. Sintomas no `curl -v`:
 - `HTTP/1.1 403 Forbidden`
 - `Cf-Mitigated: challenge`
 - Body é HTML com `<title>Just a moment...</title>`
 
-Webhook nunca recebe o request. Fix: adicione uma Custom Rule no WAF da Cloudflare exemptando o subdomínio `deploy.marcio.run`:
+Webhook nunca recebe o request.
 
-1. Cloudflare → `marcio.run` → Security → WAF → Custom rules → Create rule
+**Fix no plano Free:** Cloudflare → marcio.run → Security → Bots → toggle **Bot Fight Mode OFF** (global, zone inteiro).
+
+Por que toggle global? No plano Free só existe "Bot Fight Mode" que não é configurável por host. O "Super Bot Fight Mode" (que poderia ser exempto via WAF Custom Rule com Skip) é exclusivo do plano Pro+. Tentar criar uma Custom Rule com Skip não funciona porque ela não cobre o Bot Fight Mode básico do Free.
+
+Trade-off: perde proteção contra bots no zone inteiro. Mitigações:
+- Cloudflare DDoS protection continua ativa (separada do Bot Fight Mode)
+- WAF managed rules continuam ativas
+- Webhook tem HMAC auth (a real defesa)
+- Cada app tem sua própria auth
+
+**Fix no plano Pro+ (Super Bot Fight Mode):**
+
+1. Cloudflare → marcio.run → Security → WAF → Custom rules → Create rule
 2. Field: Hostname / equals / `deploy.marcio.run`
-3. Action: Skip
-4. Marque: Super Bot Fight Mode, Browser Integrity Check, All managed rules, Zone Lockdown
-5. Deploy
-
-Alternativa rápida (menos cirúrgica): desligar Bot Fight Mode globalmente em Security → Bots.
+3. Action: Skip → All Super Bot Fight Mode Rules
+4. Deploy
 
 **`docker compose pull` falha com `unauthorized` ou `error from registry: unauthorized`:**
 - A imagem no GHCR é privada e o container do webhook não tem credenciais do registry
