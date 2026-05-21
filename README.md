@@ -23,8 +23,15 @@ Ver [spec](docs/superpowers/specs/2026-05-21-launchpad-design.md).
 
 ## Runbooks
 
-- [Provisionar VPS do zero](docs/runbooks/provisionar-vps.md)
-- [Deploy manual durante Phase 1](docs/runbooks/deploy-manual-piloto.md)
+Ordem sugerida para chegar do zero a 1 projeto deployado:
+
+1. [Provisionar VPS](docs/runbooks/provisionar-vps.md) - cria VPS, instala docker/tailscale/firewall
+2. [Subir Traefik](docs/runbooks/subir-traefik.md) - DNS, Origin Cert, reverse proxy no ar
+3. [Adicionar projeto](docs/runbooks/adicionar-projeto.md) - onboarding de uma app
+
+Operacionais:
+
+- [Deploy manual de update (Phase 1)](docs/runbooks/deploy-manual-piloto.md)
 
 ## Operação básica
 
