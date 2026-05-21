@@ -172,9 +172,23 @@ ssh deploy@launchpad-prod 'docker logs webhook --tail 30'
 - Script falhou no meio? `docker logs webhook --tail 50`
 - Migration travou? Veja logs do `docker compose run` no log do webhook
 
-**Push pro GHCR falha na Action:**
+**Push pro GHCR falha na Action com `403 Forbidden`:**
+
+Causa típica: o pacote foi criado antes via PAT pessoal (do laptop), e o `GITHUB_TOKEN` da Action não tem permissão de escrita explícita nele.
+
+Fix:
+1. Acesse `https://github.com/<seu_user>?tab=packages`
+2. Clique no pacote (container) do projeto
+3. Package settings -> Manage Actions access -> Add Repository
+4. Selecione o repo do projeto, role **Write**
+5. Re-roda a Action
+
+Esse vínculo só precisa ser feito uma vez por projeto. Se você criar o pacote pela primeira vez direto via Action (sem push manual antes), o vínculo é criado automaticamente.
+
+**Push pro GHCR falha na Action por outros motivos:**
 - O job tem `permissions: packages: write`?
 - Login step antes do build?
+- A primeira tag (`linux/amd64`) bate com a arch que o GH Actions runner usa?
 
 **`environment: production` não aparece na aba Deployments:**
 - Job rodou com sucesso até o fim?
