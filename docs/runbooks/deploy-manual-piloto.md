@@ -15,10 +15,15 @@ Enquanto a Phase 2 (webhook) não está pronta, deploys de novas versões são m
 cd /Users/marciojunior/code/newcode/<projeto>
 TAG=$(git rev-parse --short HEAD)
 
-docker build -t ghcr.io/<GITHUB_USER>/<GITHUB_REPO>:$TAG -t ghcr.io/<GITHUB_USER>/<GITHUB_REPO>:latest .
-docker push ghcr.io/<GITHUB_USER>/<GITHUB_REPO>:$TAG
-docker push ghcr.io/<GITHUB_USER>/<GITHUB_REPO>:latest
+docker buildx build \
+  --platform linux/amd64 \
+  --push \
+  -t ghcr.io/<GITHUB_USER>/<GITHUB_REPO>:$TAG \
+  -t ghcr.io/<GITHUB_USER>/<GITHUB_REPO>:latest \
+  .
 ```
+
+Em Mac com Apple Silicon, `--platform linux/amd64` é obrigatório porque o build default seria ARM64 e a VPS é x86_64.
 
 ### 2. Deploy na VPS (via Tailscale SSH)
 

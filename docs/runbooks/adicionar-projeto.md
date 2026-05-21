@@ -87,9 +87,17 @@ Em https://github.com/settings/tokens/new:
 
 ```bash
 echo "<PAT>" | docker login ghcr.io -u <GH_USER> --password-stdin
-docker build -t ghcr.io/<GH_USER>/<GH_REPO>:latest .
-docker push ghcr.io/<GH_USER>/<GH_REPO>:latest
+
+docker buildx build \
+  --platform linux/amd64 \
+  --push \
+  -t ghcr.io/<GH_USER>/<GH_REPO>:latest \
+  .
 ```
+
+**Por que `--platform linux/amd64`:** Macs com Apple Silicon (M1/M2/M3/M4) buildam ARM64 por default. A VPS é x86_64. Sem essa flag, o `docker pull` na VPS falha com "no matching manifest for linux/amd64". Em runners do GitHub Actions (Phase 2) isso some porque eles já rodam linux/amd64 nativo.
+
+Se quiser uma imagem multi-arch (para usar localmente em ARM e na VPS em AMD), troque a flag por `--platform linux/amd64,linux/arm64`. Demora ~2x mais por build.
 
 Confirme em https://github.com/<GH_USER>?tab=packages.
 
