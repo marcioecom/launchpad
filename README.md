@@ -32,6 +32,7 @@ Ordem sugerida para chegar do zero a 1 projeto deployado:
 Operacionais:
 
 - [Deploy manual de update (Phase 1)](docs/runbooks/deploy-manual-piloto.md)
+- [Atualizar env var de um projeto](docs/runbooks/atualizar-env.md)
 
 ## Operação básica
 
