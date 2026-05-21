@@ -118,6 +118,23 @@ Se a assinatura estiver errada, o webhook responde 400/403 com mensagem de "hook
 - Caracteres especiais no secret: gere com `openssl rand -hex 32` (zero special chars)
 - Newline acidental no `.env`: arquivo não pode ter `\r\n` (use `dos2unix` se editou no Windows)
 
+**Actions recebe 403 mas curl manual do laptop funciona:**
+
+Cloudflare está bloqueando o request do GitHub Actions com challenge de bot (Bot Fight Mode). Sintomas no `curl -v`:
+- `HTTP/1.1 403 Forbidden`
+- `Cf-Mitigated: challenge`
+- Body é HTML com `<title>Just a moment...</title>`
+
+Webhook nunca recebe o request. Fix: adicione uma Custom Rule no WAF da Cloudflare exemptando o subdomínio `deploy.marcio.run`:
+
+1. Cloudflare → `marcio.run` → Security → WAF → Custom rules → Create rule
+2. Field: Hostname / equals / `deploy.marcio.run`
+3. Action: Skip
+4. Marque: Super Bot Fight Mode, Browser Integrity Check, All managed rules, Zone Lockdown
+5. Deploy
+
+Alternativa rápida (menos cirúrgica): desligar Bot Fight Mode globalmente em Security → Bots.
+
 **`docker compose pull` falha com `unauthorized` ou `error from registry: unauthorized`:**
 - A imagem no GHCR é privada e o container do webhook não tem credenciais do registry
 - O compose monta `/home/deploy/.docker/config.json:/root/.docker/config.json:ro` para reusar o login do user `deploy` no host
