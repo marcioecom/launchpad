@@ -61,7 +61,8 @@ jobs:
           signature=$(echo -n "$payload" | openssl dgst -sha256 -hmac "$DEPLOY_SECRET" -hex | awk '{print "sha256="$NF}')
 
           echo "POST $DEPLOY_URL"
+          # --data-binary (não -d) para evitar transformações do curl no body JSON.
           curl -fsSL -X POST "$DEPLOY_URL" \
             -H "Content-Type: application/json" \
             -H "X-Hub-Signature-256: $signature" \
-            -d "$payload"
+            --data-binary "$payload"
