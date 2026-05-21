@@ -92,7 +92,7 @@ Expected nos logs:
 
 Se houver erro tipo `unable to load certificate`: confira permissões (Step 4) e que os arquivos estão no path certo.
 
-Se houver erro tipo `client version X is too old. Minimum supported API version is Y`: o Docker Engine recente (25+) requer API >= 1.40, e o Go SDK do Traefik às vezes faz fallback para 1.24. O `docker-compose.yml` da stack já força `DOCKER_API_VERSION=1.43` para evitar isso. Se ainda assim aparecer, garanta que está rodando a versão atualizada do compose: `cd /srv/launchpad && git pull && cd infra/traefik && docker compose up -d`.
+Se houver erro tipo `client version 1.24 is too old. Minimum supported API version is Y`: você está em uma versão antiga do Traefik (<3.6). Docker 27+ removeu suporte a clientes que falam API <=1.39, e versões antigas do Traefik faziam fallback para 1.24. A stack atual usa `traefik:v3.7` que tem auto-negociação de API funcionando. Se ainda aparecer, garanta que está rodando a versão atualizada: `cd /srv/launchpad && git pull && cd infra/traefik && docker compose pull && docker compose up -d`.
 
 ## 7. Apagar cópias locais do cert
 
