@@ -1,0 +1,17 @@
+# Config dinâmica: certificados TLS e middlewares globais.
+
+tls:
+  certificates:
+    - certFile: /etc/traefik/certs/origin.pem
+      keyFile: /etc/traefik/certs/origin.key
+  options:
+    default:
+      minVersion: VersionTLS12
+
+http:
+  middlewares:
+    # Force https (já feito no entryPoint, este é fallback)
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
