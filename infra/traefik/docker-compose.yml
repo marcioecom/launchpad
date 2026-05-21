@@ -3,6 +3,11 @@ services:
     image: traefik:v3.2
     container_name: traefik
     restart: unless-stopped
+    environment:
+      # Força versão da API do Docker. Docker Engine 25+ requer API >= 1.40,
+      # e o Go SDK do Traefik às vezes faz fallback para 1.24 quando a
+      # negociação automática falha, causando erro de "client too old".
+      - DOCKER_API_VERSION=1.43
     ports:
       - "80:80"
       - "443:443"
