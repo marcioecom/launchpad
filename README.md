@@ -23,16 +23,17 @@ Ver [spec](docs/superpowers/specs/2026-05-21-launchpad-design.md).
 
 ## Runbooks
 
-Ordem sugerida para chegar do zero a 1 projeto deployado:
+Ordem sugerida para chegar do zero a 1 projeto deployado com deploy automatizado:
 
-1. [Provisionar VPS](docs/runbooks/provisionar-vps.md) - cria VPS, instala docker/tailscale/firewall
-2. [Subir Traefik](docs/runbooks/subir-traefik.md) - DNS, Origin Cert, reverse proxy no ar
-3. [Adicionar projeto](docs/runbooks/adicionar-projeto.md) - onboarding de uma app
+1. [Provisionar VPS](docs/runbooks/01-provisionar-vps.md) - cria VPS, instala docker/tailscale/firewall
+2. [Subir Traefik](docs/runbooks/02-subir-traefik.md) - DNS, Origin Cert, reverse proxy no ar
+3. [Adicionar projeto](docs/runbooks/03-adicionar-projeto.md) - onboarding manual de uma app
+4. [Subir webhook](docs/runbooks/04-subir-webhook.md) - serviço que recebe POSTs do GH Actions e dispara deploy (uma vez por VPS)
+5. [Automatizar deploy](docs/runbooks/05-automatizar-deploy.md) - adicionar deploy automático a um projeto (por projeto)
 
 Operacionais:
 
-- [Deploy manual de update (Phase 1)](docs/runbooks/deploy-manual-piloto.md)
-- [Atualizar env var de um projeto](docs/runbooks/atualizar-env.md)
+- [Deploy manual de update](docs/runbooks/deploy-manual-piloto.md) - quando Actions estiver indisponível
 
 ## Operação básica
 

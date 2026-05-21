@@ -1,0 +1,33 @@
+# Webhook hook definitions.
+#
+# Este arquivo é processado como Go template: use {{ getenv "VAR" | js }}
+# para inserir valores do .env. Webhook deve ser iniciado com -template
+# (já configurado no Dockerfile).
+#
+# Para adicionar um projeto novo, copie o bloco do "lupa" abaixo e ajuste.
+# Veja: docs/runbooks/automatizar-deploy.md
+
+# Healthcheck público (sem auth) usado pra validar que o webhook subiu.
+- id: hello
+  execute-command: /bin/echo
+  pass-arguments-to-command:
+    - source: string
+      name: "ok"
+
+# --- Projetos ---
+# Cada hook tem: id, script, working dir, argumento (image_tag do payload), e HMAC.
+
+- id: lupa
+  execute-command: /scripts/deploy-lupa.sh
+  command-working-directory: /srv/apps/lupa
+  pass-arguments-to-command:
+    - source: payload
+      name: image_tag
+  response-message: "deploy triggered"
+  trigger-rule:
+    match:
+      type: payload-hmac-sha256
+      secret: "{{ getenv `LUPA_DEPLOY_SECRET` | js }}"
+      parameter:
+        source: header
+        name: X-Hub-Signature-256

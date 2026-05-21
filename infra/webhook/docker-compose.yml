@@ -1,0 +1,31 @@
+services:
+  webhook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: launchpad/webhook:latest
+    container_name: webhook
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      # Acesso ao docker daemon do host (necessário pra rodar docker compose nos projetos)
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Config dos hooks (template com getenv)
+      - ./hooks.yaml.tmpl:/etc/webhook/hooks.yaml.tmpl:ro
+      # Scripts de deploy por projeto
+      - ./scripts:/scripts:ro
+      # Pastas dos projetos pra executar docker compose neles
+      - /srv/apps:/srv/apps
+    networks:
+      - web
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web
+      - traefik.http.routers.webhook.rule=Host(`deploy.marcio.run`)
+      - traefik.http.routers.webhook.entrypoints=websecure
+      - traefik.http.routers.webhook.tls=true
+      - traefik.http.services.webhook.loadbalancer.server.port=9000
+
+networks:
+  web:
+    external: true

@@ -1,0 +1,31 @@
+#!/bin/sh
+# Template de deploy script para webhook.
+# Copie para: launchpad/infra/webhook/scripts/deploy-PROJETO.sh
+# Substitua:
+#   PROJETO        -> nome do projeto (ex: lupa)
+#   MIGRATE_CMD    -> comando de migration. Exemplos:
+#                       Drizzle:  pnpm db:push
+#                       Prisma:   pnpm prisma migrate deploy
+#                       TypeORM:  pnpm typeorm migration:run
+#                     Se o projeto não tem migrations, apague o bloco inteiro.
+
+set -e
+
+IMAGE_TAG="${1:-latest}"
+echo "==> Deploy PROJETO @ tag=${IMAGE_TAG}"
+
+cd /srv/apps/PROJETO
+
+echo "==> Pull da imagem nova"
+IMAGE_TAG="${IMAGE_TAG}" docker compose pull app
+
+echo "==> Migrations"
+IMAGE_TAG="${IMAGE_TAG}" docker compose run --rm app MIGRATE_CMD
+
+echo "==> Recreate do container app (postgres mantém estado)"
+IMAGE_TAG="${IMAGE_TAG}" docker compose up -d --no-deps app
+
+echo "==> Limpeza de imagens órfãs"
+docker image prune -f
+
+echo "==> Deploy completo"

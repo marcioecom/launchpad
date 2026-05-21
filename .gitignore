@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+infra/webhook/.env
 
 # Cloudflare Origin Cert (privada não vai pro git)
 infra/traefik/certs/*.pem

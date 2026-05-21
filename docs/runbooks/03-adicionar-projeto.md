@@ -6,7 +6,7 @@ Tempo estimado: 15-25 minutos (depende de quanto o projeto já tem pronto).
 
 ## Pré-requisitos
 
-- VPS provisionada e com Traefik no ar ([subir-traefik.md](subir-traefik.md))
+- VPS provisionada e com Traefik no ar ([subir-traefik.md](02-subir-traefik.md))
 - Acesso ao repo do projeto no GitHub
 - Postgres é a única dependência (Redis ou outros vêm depois)
 

@@ -6,7 +6,7 @@ Tempo estimado: 15-20 minutos.
 
 ## Pré-requisitos
 
-- VPS provisionada (ver [provisionar-vps.md](provisionar-vps.md))
+- VPS provisionada (ver [provisionar-vps.md](01-provisionar-vps.md))
 - Acesso SSH via Tailscale: `ssh deploy@launchpad-prod`
 - Conta na Cloudflare com `marcio.run` (ou seu domínio) configurado
 - Launchpad clonado em `/srv/launchpad` na VPS
@@ -22,7 +22,7 @@ Crie ou atualize (proxy ATIVO, ícone laranja) apontando para o IP público da V
 | A    | deploy  | `<VPS_IP>`    | Proxied  |
 | A    | traefik | `<VPS_IP>`    | Proxied  |
 
-Os subdomínios de projetos (ex: `lupa`) serão criados quando você fizer onboarding de cada projeto (ver [adicionar-projeto.md](adicionar-projeto.md)).
+Os subdomínios de projetos (ex: `lupa`) serão criados quando você fizer onboarding de cada projeto (ver [adicionar-projeto.md](03-adicionar-projeto.md)).
 
 Em SSL/TLS -> Overview, confirme modo **Full (strict)**.
 
@@ -125,4 +125,4 @@ Se vier erro de SSL: confira que CF está em "Full (strict)" e que o cert foi in
 
 Se vier "could not resolve host": DNS ainda propagando. Aguarde 1-2 minutos e tente de novo.
 
-Pronto. Próximo passo: [adicionar um projeto](adicionar-projeto.md).
+Pronto. Próximo passo: [adicionar um projeto](03-adicionar-projeto.md).
