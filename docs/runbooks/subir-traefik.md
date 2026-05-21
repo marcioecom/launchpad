@@ -106,12 +106,14 @@ rmdir ~/launchpad-certs
 
 ## 8. Validar
 
+Use um subdomínio que já tem DNS apontando pra VPS (foi criado no Step 1). Por exemplo:
+
 ```bash
 # do laptop (substitua pelo seu domínio)
-curl -I https://lupa.marcio.run
+curl -I https://traefik.marcio.run
 ```
 
-Expected: **HTTP/2 404** com `server: cloudflare`. O 404 é esperado porque ainda não tem app respondendo no subdomínio. O importante é que:
+Expected: **HTTP/2 404** com `server: cloudflare`. O 404 é esperado porque ainda não tem app respondendo nesse subdomínio. O importante é que:
 - Cloudflare resolveu DNS
 - Cloudflare conectou na VPS via HTTPS
 - Origin Cert foi aceito pela Cloudflare
@@ -120,5 +122,7 @@ Expected: **HTTP/2 404** com `server: cloudflare`. O 404 é esperado porque aind
 Se vier `Bad Gateway` (502): Traefik não está rodando. Verifique `docker ps` na VPS.
 
 Se vier erro de SSL: confira que CF está em "Full (strict)" e que o cert foi instalado com permissões corretas.
+
+Se vier "could not resolve host": DNS ainda propagando. Aguarde 1-2 minutos e tente de novo.
 
 Pronto. Próximo passo: [adicionar um projeto](adicionar-projeto.md).
