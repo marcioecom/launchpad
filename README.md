@@ -5,7 +5,7 @@ Self-hosting deploy stack pessoal. Provisiona VPS Hetzner com Docker, Traefik e 
 ## Status
 
 - [x] Phase 1: Foundation (VPS, Traefik, 1 projeto piloto manual)
-- [ ] Phase 2: Deploy automatizado via webhook + GH Actions
+- [x] Phase 2: Deploy automatizado via webhook + GH Actions
 - [ ] Phase 3: Backup automatizado
 - [ ] Phase 4: Migração dos demais projetos
 - [ ] Phase 5: Observability básica (Uptime Kuma) + automação onboarding
