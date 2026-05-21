@@ -10,6 +10,9 @@ services:
     volumes:
       # Acesso ao docker daemon do host (necessário pra rodar docker compose nos projetos)
       - /var/run/docker.sock:/var/run/docker.sock
+      # Auth do GHCR: reusa o login feito pelo user deploy no host.
+      # Sem isso, docker compose pull falha com "unauthorized" em imagens privadas.
+      - /home/deploy/.docker/config.json:/root/.docker/config.json:ro
       # Config dos hooks (template com getenv)
       - ./hooks.yaml.tmpl:/etc/webhook/hooks.yaml.tmpl:ro
       # Scripts de deploy por projeto

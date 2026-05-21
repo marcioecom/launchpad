@@ -118,4 +118,11 @@ Se a assinatura estiver errada, o webhook responde 400/403 com mensagem de "hook
 - Caracteres especiais no secret: gere com `openssl rand -hex 32` (zero special chars)
 - Newline acidental no `.env`: arquivo não pode ter `\r\n` (use `dos2unix` se editou no Windows)
 
+**`docker compose pull` falha com `unauthorized` ou `error from registry: unauthorized`:**
+- A imagem no GHCR é privada e o container do webhook não tem credenciais do registry
+- O compose monta `/home/deploy/.docker/config.json:/root/.docker/config.json:ro` para reusar o login do user `deploy` no host
+- Garanta que você fez `docker login ghcr.io` como `deploy` (não como root) na VPS quando seguiu o [03-adicionar-projeto.md](03-adicionar-projeto.md)
+- Verifique: `cat /home/deploy/.docker/config.json` (deve ter `auths` com `ghcr.io`)
+- Se mudou o login no host depois de subir o webhook, recrie o container: `cd /srv/launchpad/infra/webhook && docker compose up -d`
+
 Pronto. Próximo passo: [automatizar-deploy.md](05-automatizar-deploy.md) para o lupa (Steps 1-5 antes do GitHub Actions).
