@@ -1,0 +1,53 @@
+# Template de docker-compose para projeto app.
+# Substitua todas ocorrências de:
+#   APP_NAME -> nome do projeto (kebab-case, ex: permit)
+#   SUBDOMAIN -> subdomínio (ex: permit)
+#   DOMAIN -> seu domínio raiz (ex: marcioecom.dev)
+#   GITHUB_USER -> seu username github
+#   GITHUB_REPO -> nome do repo no github
+#   APP_PORT -> porta interna que a app expõe (default 3000)
+
+services:
+  app:
+    image: ghcr.io/GITHUB_USER/GITHUB_REPO:${IMAGE_TAG:-latest}
+    container_name: APP_NAME-app
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - web
+      - internal
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web
+      - traefik.http.routers.APP_NAME.rule=Host(`SUBDOMAIN.DOMAIN`)
+      - traefik.http.routers.APP_NAME.entrypoints=websecure
+      - traefik.http.routers.APP_NAME.tls=true
+      - traefik.http.services.APP_NAME.loadbalancer.server.port=APP_PORT
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: APP_NAME-postgres
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+networks:
+  web:
+    external: true
+  internal:
+    driver: bridge
