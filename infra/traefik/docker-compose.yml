@@ -15,11 +15,14 @@ services:
       - web
     labels:
       - traefik.enable=true
-      # Dashboard só acessível via Tailscale (porta interna)
-      - traefik.http.routers.dashboard.rule=Host(`traefik.localhost`)
+      # Dashboard público em traefik.marcio.run, protegido por Basic Auth
+      - traefik.http.routers.dashboard.rule=Host(`traefik.marcio.run`)
       - traefik.http.routers.dashboard.service=api@internal
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.middlewares=dashboard-auth
+      # Gere o hash com: htpasswd -nB admin   (dobre cada $ para $$)
+      - traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_AUTH}
 
 networks:
   web:
