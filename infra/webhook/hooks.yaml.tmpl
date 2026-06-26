@@ -31,3 +31,18 @@
       parameter:
         source: header
         name: X-Hub-Signature-256
+
+- id: ai-chatbot
+  execute-command: /scripts/deploy-ai-chatbot.sh
+  command-working-directory: /srv/apps/ai-chatbot
+  pass-arguments-to-command:
+    - source: payload
+      name: image_tag
+  response-message: "deploy triggered"
+  trigger-rule:
+    match:
+      type: payload-hmac-sha256
+      secret: "{{ getenv `AI_CHATBOT_DEPLOY_SECRET` | js }}"
+      parameter:
+        source: header
+        name: X-Hub-Signature-256
